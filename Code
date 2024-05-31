@@ -1,3 +1,5 @@
+# -FLOOD-MONITORING-SYSTEM-USING-IOT
+# It is a real-time IoT-based flood monitoring system using Raspberry Pi and various sensors to detect and alert against potential flooding conditions.
 import RPi.GPIO as GPIO import time
 import Adafruit_DHT
 from twilio.rest import Client import requests
@@ -8,7 +10,7 @@ THINGSPEAK_URL = 'https://api.thingspeak.com/update?api_key=P103E66K4HSTMJMD'
 
 # Twilio parameters
 TWILIO_ACCOUNT_SID = 'AC6fba5c416c197d9a3ecf1b79baf2c2b0' TWILIO_AUTH_TOKEN = '8b665b2ecca4a5283de080dd8995f7e8' TWILIO_PHONE_NUMBER = '+12058431673'
-RECIPIENT_PHONE_NUMBER = '+916369587175'
+RECIPIENT_PHONE_NUMBER = "7897788430"
 
 # GPIO pins ULTRASONIC_TRIG = 21
 ULTRASONIC_ECHO = 20
@@ -20,20 +22,29 @@ DHT_PIN = 16
 DHT_SENSOR = Adafruit_DHT.DHT11
 
 # Threshold values
-ULTRASONIC_THRESHOLD = 3 # Threshold value in centimeters TEMP_ALERT_THRESHOLD = 27 # Temperature alert threshold in degrees Celsius
+ULTRASONIC_THRESHOLD = 3 # Threshold value in centimeters 
+TEMP_ALERT_THRESHOLD = 27 # Temperature alert threshold in degrees Celsius
 
-# Set GPIO mode GPIO.setmode(GPIO.BCM)
+# Set GPIO mode 
+GPIO.setmode(GPIO.BCM)
 
-# Set up ultrasonic sensor GPIO.setup(ULTRASONIC_TRIG, GPIO.OUT) GPIO.setup(ULTRASONIC_ECHO, GPIO.IN)
+# Set up ultrasonic sensor 
+GPIO.setup(ULTRASONIC_TRIG, GPIO.OUT) 
+GPIO.setup(ULTRASONIC_ECHO, GPIO.IN)
 
-# Set up raindrop sensor GPIO.setup(RAIN_SENSOR, GPIO.IN)
+# Set up raindrop sensor 
+GPIO.setup(RAIN_SENSOR, GPIO.IN)
  
 
 # Set up temperature sensor GPIO.setup(DHT_PIN, GPIO.IN)
 
-# Set up LEDs and Buzzer GPIO.setup(RED_LED, GPIO.OUT) GPIO.setup(GREEN_LED, GPIO.OUT) GPIO.setup(BUZZER, GPIO.OUT)
+# Set up LEDs and Buzzer 
+GPIO.setup(RED_LED, GPIO.OUT) 
+GPIO.setup(GREEN_LED, GPIO.OUT) 
+GPIO.setup(BUZZER, GPIO.OUT)
 
-# Function to measure distance using ultrasonic sensor def measure_distance():
+# Function to measure distance using ultrasonic sensor 
+def measure_distance():
 GPIO.output(ULTRASONIC_TRIG, True) time.sleep(0.00001) GPIO.output(ULTRASONIC_TRIG, False)
 
 pulse_start = time.time() pulse_end = time.time()
@@ -51,11 +62,13 @@ return distance
  
 return not GPIO.input(RAIN_SENSOR) == GPIO.HIGH
 
-# Function to measure temperature using DHT11 sensor def measure_temperature():
+# Function to measure temperature using DHT11 sensor 
+def measure_temperature():
 humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN) if humidity is not None and temperature is not None:
 temperature = round(temperature, 2) return temperature
 
-# Function to send SMS using Twilio def send_sms(message):
+# Function to send SMS using Twilio 
+def send_sms(message):
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 client.messages.create( to=RECIPIENT_PHONE_NUMBER, from_=TWILIO_PHONE_NUMBER,
 body=message
@@ -83,4 +96,7 @@ else:
 GPIO.output(RED_LED, GPIO.LOW) GPIO.output(GREEN_LED, GPIO.HIGH) GPIO.output(BUZZER, GPIO.LOW)
 
 update_thingspeak(ultrasonic_distance, temperature) time.sleep(5) # Adjust according to your requirement
-except KeyboardInterrupt: GPIO.cleanup()
+except KeyboardInterrupt: 
+GPIO.cleanup()
+
+
